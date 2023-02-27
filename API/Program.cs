@@ -1,4 +1,5 @@
 
+using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,10 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+//AddScoped means it instantiates it and lives while the Http Request is Alive, Transient means only while the function executes
+//and singleton means its alive from when the app starts until it shuts down
+//so this lives as long as we need it
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 
@@ -27,5 +32,24 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+//AddDbContext is basically a scope, and since CreateScope inherits from IDisposable, when the execution finishes we get rid of it
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+var context = services.GetRequiredService<StoreContext>();
+var logger = services.GetRequiredService<ILogger<Program>>();
+
+try
+{
+    //Asynchronously applies any pending migrations for the context to the database. Will create the database if it does not already exist.
+    await context.Database.MigrateAsync();
+    await StoreContextSeed.SeedAsync(context);
+}
+catch (Exception ex)
+{
+
+    logger.LogError(ex, "An Error occured during Migration");
+}
+
 
 app.Run();
