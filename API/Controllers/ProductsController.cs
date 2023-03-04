@@ -1,5 +1,6 @@
 
 using API.Dtos;
+using API.errors;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -8,9 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseApiController
     {
         //when the api call comes, it instanciates a productsController class and when it reads the ctor, it sees that it needs a service
         //and since our service is registered in the program.cs class then it can be used and access all of its methods
@@ -59,10 +58,13 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)] //to tell swagger to know that it can return this as well, typeof to format it
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductsWithBrandsAndTypesSpecification(id); //this will run ctor with parameter
             var product = await _ProductsRepo.GetEntityWithSpec(spec);
+            if (product == null) return NotFound(new ApiResponse(404));
             return _mapper.Map<Product, ProductToReturnDto>(product);
             // return new ProductToReturnDto
             // {

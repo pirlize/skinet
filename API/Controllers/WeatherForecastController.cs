@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
+[ApiExplorerSettings(IgnoreApi = true)] //hides it from swagger
 [Route("[controller]")] //GET localhost:5001/weatherforecast
 public class WeatherForecastController : ControllerBase
 {
