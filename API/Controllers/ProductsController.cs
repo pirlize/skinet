@@ -1,6 +1,7 @@
 
 using API.Dtos;
 using API.errors;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -37,12 +38,16 @@ namespace API.Controllers
         //we are telling it we want this http to return a List of Products
         //and we make it async by adding async task, await, tolistAsync
         //we make it async to be scalable, handle multiple requests/threads and not wait for a query or request to finish
+        //we have to pass [FromQuery] now cuz we pass an object as parameter, and the httpGet Gets confused since it hasnt got a body
         [HttpGet]
-        public async Task<ActionResult<List<ProductToReturnDto>>> GetProducts()
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecParams productParams)
         {
-            var spec = new ProductsWithBrandsAndTypesSpecification();
+            var spec = new ProductsWithBrandsAndTypesSpecification(productParams);
+            var countSpec = new ProductWithFiltersForCountSpecification(productParams);
+            var totalItems = await _ProductsRepo.CountAsync(countSpec);
             var products = await _ProductsRepo.ListAsync(spec);
-            return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+            return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize, totalItems, data));
             //var products = await _ProductsRepo.ListAllAsync(); //pre specific pattern
             // return Ok(products);
             // return products.Select(product => new ProductToReturnDto

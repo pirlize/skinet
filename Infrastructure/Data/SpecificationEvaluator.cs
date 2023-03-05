@@ -14,6 +14,21 @@ namespace Infrastructure.Data
             {
                 query = query.Where(spec.Criteria); //spec.Criteria = where Id == Product.Id
             }
+
+            if (spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+
+            if (spec.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+            //order of if statements matters cuz u want to filter first before you page the result
+            if (spec.IsPagingEnabled)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
+            }
             //Aggregate returns all the includes statements
             query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
 

@@ -21,7 +21,7 @@ namespace API.Extensions
             //AddScoped means it instantiates it and lives while the Http Request is Alive, Transient means only while the function executes
             //and singleton means its alive from when the app starts until it shuts down
             //so this lives as long as we need it
-            services.AddScoped<IProductRepository, ProductRepository>();
+            //services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>)); //typeof cuz we dont have type for generic, now we made it service
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); //add automapper
                                                                              //configure default ApiController error handling
@@ -41,6 +41,13 @@ namespace API.Extensions
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
+            services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+    });
+});
             return services;
         }
     }

@@ -24,7 +24,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 //}
 app.UseStaticFiles(); //to serve images it looks at wwwroot folder by default
-
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();
