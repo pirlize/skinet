@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
-import { ShopModule } from './shop/shop.module';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,7 +17,8 @@ import { ShopModule } from './shop/shop.module';
     HttpClientModule,
     CoreModule,
     SharedModule,
-    ShopModule,
+    //  ShopModule, since we lazy load it only when we need it we dont need to import it
+    HomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

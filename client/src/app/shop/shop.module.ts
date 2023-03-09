@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ShopComponent } from './shop.component';
 import { ProductItemComponent } from './product-item/product-item.component';
 import { SharedModule } from '../shared/shared.module';
+import { ProductDetailsComponent } from './product-details/product-details.component';
+import { ShopRoutingModule } from './shop-routing.module';
 
 @NgModule({
-  declarations: [ShopComponent, ProductItemComponent],
-  imports: [CommonModule, SharedModule],
-  exports: [ShopComponent, ProductItemComponent],
+  declarations: [ShopComponent, ProductItemComponent, ProductDetailsComponent],
+  imports: [CommonModule, SharedModule, ShopRoutingModule], //replace routermodule with shopRoutingModule & no need to export components anymore
 })
 export class ShopModule {}
