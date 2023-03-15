@@ -3,13 +3,20 @@ import { CommonModule } from '@angular/common';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PagingHeaderComponent } from './paging-header/paging-header.component';
 import { PagerComponent } from './pager/pager.component';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 @NgModule({
   declarations: [PagingHeaderComponent, PagerComponent],
   imports: [
     CommonModule,
     PaginationModule.forRoot(), //means singleton, needs 1 instance, cuz of lazy loading
+    CarouselModule.forRoot(),
   ],
-  exports: [PaginationModule, PagingHeaderComponent, PagerComponent],
+  exports: [
+    PaginationModule,
+    PagingHeaderComponent,
+    PagerComponent,
+    CarouselModule,
+  ],
 })
 export class SharedModule {}

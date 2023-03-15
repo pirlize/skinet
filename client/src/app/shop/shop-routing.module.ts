@@ -6,7 +6,11 @@ import { ShopComponent } from './shop.component';
 
 const routes: Routes = [
   { path: '', component: ShopComponent },
-  { path: ':id', component: ProductDetailsComponent }, //pass parameter
+  {
+    path: ':id',
+    component: ProductDetailsComponent,
+    data: { breadcrumb: { alias: 'productDetails' } },
+  }, //pass parameter
 ];
 
 @NgModule({
